@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { genericOAuth } from "better-auth/plugins";
+import { genericOAuth, bearer } from "better-auth/plugins";
 
 import { Pool } from "pg";
 
@@ -11,13 +11,14 @@ export const auth = betterAuth({
         maxLifetimeSeconds: 60,
     }),
     plugins: [
+        bearer(),
         genericOAuth({ 
             config: [ 
                 { 
-                    providerId: "hackclub-auth", 
-                    clientId: process.env.clientId || "", 
-                    clientSecret: process.env.clientSecret || "", 
-                    discoveryUrl: "https://auth.hackclub.com/oauth/authorize", 
+                    providerId: "hackclub", 
+                    clientId: process.env.clientId as string,
+                    clientSecret: process.env.clientSecret as string,
+                    discoveryUrl: "https://auth.hackclub.com/.well-known/openid-configuration",
                 }
             ]
         })
