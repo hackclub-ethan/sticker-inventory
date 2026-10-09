@@ -1,22 +1,15 @@
 "use client";
 
-import { useEffect } from 'react';
+import { FormEvent } from 'react';
 
-import { redirect } from 'next/navigation'
 import { useRouter } from 'next/navigation'
-//import { cookies } from 'next/headers'
 
 import { authClient } from '@/src/lib/auth-client';
-import { getAuthAppInfo } from '@/src/utils/getAuthAppInfo';
-
-// import { setCookieCache } from 'better-auth/cookies';
+import { Button } from '@heroui/react';
 
 export default function Page() {
     const router = useRouter();
-    //const cookieStore = await cookies();
-
-    let ifRan = false;
-
+    
     const { 
         data: session, 
         isPending, //loading state
@@ -28,29 +21,18 @@ export default function Page() {
         router.replace("/dashboard");
     };
 
-    useEffect(() => {
-        if (!ifRan) {
-            ifRan = true;
-            
-            getAuthAppInfo().then((json) => {
-                console.log(json.state)
-                /*
-                cookieStore.set({
-                    name: "state",
-                    value: json.state,
-                    secure: true,
-                    sameSite: "none"
-                });
-                */
-               //&state=${json.state}
-                const authURL = `https://auth.hackclub.com/oauth/authorize?client_id=${json.clientId}&redirect_uri=${json.redirect}&response_type=${json.responseType}&scope=${json.scope}`;
+    async function handleSignIn(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
 
-                redirect(authURL); 
-            });
-        };
-    }, [])
-
+        const { data, error } = await authClient.signIn.social({
+            provider: "hackclub",
+            callbackURL: "/api/auth/callback/hackclub"
+        });
+    };
+    
     return (
-        <p>Loading</p>
+        <form onSubmit={handleSignIn}>
+            <Button type='submit'>Sign In with Hackclub</Button>
+        </form>
     );
 };
