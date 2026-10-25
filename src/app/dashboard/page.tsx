@@ -41,10 +41,10 @@ export default function Page() {
     };
     
     return (
-        <>
-            <h1>Dashboard</h1>
+        <span className={pageStyles.page}>
+            <h1 className={pageStyles.title}>Dashboard</h1>
 
-            <span className={`grid ${pageStyles.majorStats}`}>
+            <span className={`grid ${pageStyles.majorStats} ${pageStyles.majorStatsGrid}`}>
                 <Card className='row1 col1'>
                     <Card.Header>
                         <Card.Title>{stickerCount}</Card.Title>
@@ -68,14 +68,14 @@ export default function Page() {
                 </Card>
             </span>
 
-            <span className={`grid`}>
+            <span className={`grid ${pageStyles.managementTable}`}>
                 <Table className='row1 col1'>
                     <Table.ScrollContainer>
                         <Table.Content>
                             <Table.Header>
                                 <Table.Column isRowHeader>Stickers You Need</Table.Column>
-                                <Table.Column></Table.Column>
-                                <Table.Column></Table.Column>
+                                <Table.Column>Picture</Table.Column>
+                                <Table.Column>Quantity</Table.Column>
                             </Table.Header>
 
                             <Table.Body>
@@ -91,8 +91,8 @@ export default function Page() {
                         <Table.Content>
                             <Table.Header>
                                 <Table.Column isRowHeader>Wishlist</Table.Column>
-                                <Table.Column></Table.Column>
-                                <Table.Column></Table.Column>
+                                <Table.Column>Picture</Table.Column>
+                                <Table.Column>Quantity</Table.Column>
                             </Table.Header>
 
                             <Table.Body>
@@ -118,6 +118,6 @@ export default function Page() {
                     </Table.ScrollContainer>
                 </Table>
             </span>
-        </>
+        </span>
     );
 };
