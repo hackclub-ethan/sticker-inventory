@@ -41,4 +41,10 @@ CREATE TABLE "stickers" (
   "userid" text NOT NULL,
   "quantity" integer NOT NULL
 );
+
+CREATE TABLE "allStickers" (
+  "name" text PRIMARY KEY,
+  "image" text NOT NULL UNIQUE,
+  "userid" text NOT NULL
+);
 ```
