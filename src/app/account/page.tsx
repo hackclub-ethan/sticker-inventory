@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 
-import { Button, Modal } from '@heroui/react';
+import { Button, Modal, toast } from '@heroui/react';
 
 import { authClient } from '@/src/lib/auth-client';
 
@@ -18,6 +18,26 @@ export default function Page() {
 
     if (!session && !isPending) {
         router.replace("/signin");
+    };
+
+    function deleteAccount(e: any) {
+        fetch("../../account", {
+            method: "DELETE"
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Response was not ok");
+            };
+        })
+        .catch(e => {
+            console.error(e);
+
+            toast("Something went wrong deleting your account", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+        });
     };
 
     return (
@@ -44,7 +64,7 @@ export default function Page() {
 
                             <Modal.Footer>
                                 <Button slot="close">DO NOT delete account</Button>
-                                <Button variant="danger" slot="close">I am sure. DELETE ACCOUNT</Button>
+                                <Button variant="danger" slot="close" onPress={deleteAccount}>I am sure. DELETE ACCOUNT</Button>
                             </Modal.Footer>
                         </Modal.Dialog>
                     </Modal.Container>
