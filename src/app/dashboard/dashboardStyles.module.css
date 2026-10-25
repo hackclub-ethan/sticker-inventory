@@ -1,0 +1,11 @@
+.majorStats {
+    gap: 5%;
+
+    width: 50%;
+
+    margin-left: 2.5%;
+}
+
+.fullGrid {
+    grid-column: span 2;
+}
