@@ -19,6 +19,7 @@ BETTER_AUTH_URL="<root url of website ex: `http://localhost:3000`>"
 
 ### DB Setup
 ```sql
+-- Better Auth
 create table "user" ("id" text not null primary key, "name" text not null, "email" text not null unique, "emailVerified" boolean not null, "image" text, "createdAt" timestamptz default CURRENT_TIMESTAMP not null, "updatedAt" timestamptz default CURRENT_TIMESTAMP not null);
 
 create table "session" ("id" text not null primary key, "expiresAt" timestamptz not null, "token" text not null unique, "createdAt" timestamptz default CURRENT_TIMESTAMP not null, "updatedAt" timestamptz not null, "ipAddress" text, "userAgent" text, "userId" text not null references "user" ("id") on delete cascade);
@@ -32,4 +33,12 @@ create index "session_userId_idx" on "session" ("userId");
 create index "account_userId_idx" on "account" ("userId");
 
 create index "verification_identifier_idx" on "verification" ("identifier");
+
+-- Rest of the stuff
+CREATE TABLE "stickers" (
+  "id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "stickers_id_seq"),
+  "stickername" text NOT NULL,
+  "userid" text NOT NULL,
+  "quantity" integer NOT NULL
+);
 ```
