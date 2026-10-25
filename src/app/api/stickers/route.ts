@@ -161,12 +161,10 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
         let stickerExists = false;
 
-        const allStickers = await sql`SELECT * FROM allstickers;`;
+        const allStickers = await sql`SELECT * FROM allstickers WHERE name=${stickerName};`;
 
-        for (let i = 0; i < allStickers.length; i++) {
-            if (allStickers["stickername"] == stickerName) {
-                stickerExists = true;
-            };
+        if (allStickers.length > 0) {
+            stickerExists = true;
         };
 
         if (!stickerExists) {
@@ -180,8 +178,9 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
         let inDb = false;
 
+
         try {
-            const dbResult = await sql`SELCT * FROM stickers WHERE stickername = ${stickerName} AND userid = ${userId};`;
+            const dbResult = await sql`SELECT * FROM stickers WHERE stickername=${stickerName} AND userid=${userId};`;
 
             if (dbResult.length > 0) {
                 inDb = true;
@@ -191,7 +190,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
             return NextResponse.json(
                 {
-                    "error": "Somethign went wrong reading the database"
+                    "error": "Something went wrong reading the database"
                 },
                 { status: 500 }
             );
@@ -201,7 +200,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             if (inDb) {
                 await sql`UPDATE stickers SET quantity = ${newAmount} WHERE stickername = ${stickerName} AND userid = ${userId};`;
             } else {
-                await sql`INSERT INTO stickers (stickername, userid, quantity) VALUES (${stickerName}, ${userId}, ${newAmount});`;
+                await sql`INSERT INTO stickers (stickername, userid, quantity, image) VALUES (${stickerName}, ${userId}, ${newAmount}, ${allStickers[0].image});`;
             };
         } catch (e) {
             console.error(e);

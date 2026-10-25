@@ -9,6 +9,17 @@ export function StickerCard(props: any) {
     const image = props.image;
     const amount = props.amount;
 
+    function updateValue(e: number): void {
+        fetch("../api/stickers", {
+            method: "PUT",
+            body: JSON.stringify({
+                editSticker: false,
+                stickerName: name,
+                amount: e
+            })
+        })
+    };
+
     return (
         <Table.Row>
             <Table.Cell>{name}</Table.Cell>
@@ -22,7 +33,7 @@ export function StickerCard(props: any) {
                 />
             </Table.Cell>
             <Table.Cell>
-                <NumberField defaultValue={amount}>
+                <NumberField defaultValue={amount} minValue={0} onChange={updateValue} aria-label="Sticker Amount">
                     <NumberField.Group>
                         <NumberField.DecrementButton />
                         <NumberField.Input />
