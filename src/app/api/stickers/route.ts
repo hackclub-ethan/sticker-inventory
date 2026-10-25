@@ -1,5 +1,3 @@
-import { promises as fs } from "fs";
-
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
@@ -41,7 +39,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     );
 };
 
-// Change Sticker Amount
+// Change Sticker Amount/Edit custom Sticker
 export async function PUT(req: NextRequest): Promise<NextResponse> {
     const session = await auth.api.getSession({headers: await headers()});
 
@@ -57,9 +55,17 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     const userId: string = session["session"]["userId"];
 
     const body: any = await req.json();
-
+    const editSticker = body["editSticker"];
     const stickerName: string|null|undefined = body["stickerName"];
-    const newAmount: number|null|undefined = body["amount"];
+
+    if (typeof editSticker !== "boolean") {
+        return NextResponse.json(
+            {
+                "error": "editSticker did not have a valid value"
+            },
+            { status: 400 }
+        );
+    };
 
     if (!stickerName || stickerName.trim() === "") {
         return NextResponse.json(
@@ -70,72 +76,140 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    if (!newAmount || Number.isNaN(newAmount) || newAmount < 0) {
-        return NextResponse.json(
-            {
-                "error": "Invaild Sticker Amount"
-            },
-            { status: 400 }
-        );
-    };
+    if (editSticker) {
+        const currentStickerData = await sql`SELECT * FROM allstickers WHERE userid=${userId} AND name=${stickerName};`;
 
-    let stickerExists = false;
-
-    const allStickers = await sql`SELECT * FROM allstickers;`;
-
-    for (let i = 0; i < allStickers.length; i++) {
-        if (allStickers["stickername"] == stickerName) {
-            stickerExists = true;
+        if (currentStickerData.length <= 0) {
+            return NextResponse.json(
+                {
+                    "error": "No sticker with that name found that you created"
+                },
+                { status: 404 }
+            );
         };
-    };
 
-    if (!stickerExists) {
-        return NextResponse.json(
-            {
-                "error": "That sticker does not exist"
-            },
-            { status: 404 }
-        );
-    };
+        const newName: string|undefined|null = body["newName"];
+        const newImage: string|undefined|null = body["newImage"];
 
-    let inDb = false;
-
-    try {
-        const dbResult = await sql`SELCT * FROM stickers WHERE stickername = ${stickerName} AND userid = ${userId};`;
-
-        if (dbResult.length > 0) {
-            inDb = true;
+        if ((!newName || newName.trim() === "") && (!newImage || newImage.trim() === "")) {
+            return NextResponse.json(
+                {
+                    "error": "You need to change something"
+                },
+                { status: 400 }
+            );
         };
-    } catch (e) {
-        return NextResponse.json(
-            {
-                "error": "Somethign went wrong reading the database"
-            },
-            { status: 500 }
-        );
-    };
 
-    try {
-        if (inDb) {
-            await sql`UPDATE stickers SET quantity = ${newAmount} WHERE stickername = ${stickerName} AND userid = ${userId};`;
+        if (!newName || newName.trim() === "") {
+            try {
+                await sql`UPDATE allstickers SET image = ${newImage} WHERE userid=${userId} AND name=${stickerName};`;
+            } catch (e) {
+                return NextResponse.json(
+                    {
+                        "error": "Something went wrong editing sticker image"
+                    },
+                    { status: 500 }
+                );
+            };
+        } else if (!newImage || newImage.trim() === "") {
+            // Change the name
+            try {
+                await sql`UPDATE allstickers SET name=${newName} WHERE userid=${userId} AND image=${currentStickerData[0]["image"]};`;
+            } catch (e) {
+                return NextResponse.json(
+                    {
+                        "error": "Something went wrong editing the sticker name"
+                    },
+                    { status: 500 }
+                );
+            };
         } else {
-            await sql`INSERT INTO stickers (stickername, userid, quantity) VALUES (${stickerName}, ${userId}, ${newAmount});`;
+            try {
+                await sql`UPDATE allstickers SET name=${newName}, image=${newImage} WHERE userid=${userId} AND name=${stickerName};`;
+            } catch(e) {
+                return NextResponse.json(
+                    {
+                        "error": "Something went wrong updating the name and/or image"
+                    },
+                    { status: 500 }
+                );
+            };
         };
-    } catch (e) {
-        console.error(e);
 
         return NextResponse.json(
-            {
-                "error": "Something went wrong updating the database"
-            },
-            { status: 500 }
+            {},
+            { status: 200 }
+        ); 
+    } else {
+        const newAmount: number|null|undefined = body["amount"];
+
+        if (!newAmount || Number.isNaN(newAmount) || newAmount < 0) {
+            return NextResponse.json(
+                {
+                    "error": "Invaild Sticker Amount"
+                },
+                { status: 400 }
+            );
+        };
+
+        let stickerExists = false;
+
+        const allStickers = await sql`SELECT * FROM allstickers;`;
+
+        for (let i = 0; i < allStickers.length; i++) {
+            if (allStickers["stickername"] == stickerName) {
+                stickerExists = true;
+            };
+        };
+
+        if (!stickerExists) {
+            return NextResponse.json(
+                {
+                    "error": "That sticker does not exist"
+                },
+                { status: 404 }
+            );
+        };
+
+        let inDb = false;
+
+        try {
+            const dbResult = await sql`SELCT * FROM stickers WHERE stickername = ${stickerName} AND userid = ${userId};`;
+
+            if (dbResult.length > 0) {
+                inDb = true;
+            };
+        } catch (e) {
+            return NextResponse.json(
+                {
+                    "error": "Somethign went wrong reading the database"
+                },
+                { status: 500 }
+            );
+        };
+
+        try {
+            if (inDb) {
+                await sql`UPDATE stickers SET quantity = ${newAmount} WHERE stickername = ${stickerName} AND userid = ${userId};`;
+            } else {
+                await sql`INSERT INTO stickers (stickername, userid, quantity) VALUES (${stickerName}, ${userId}, ${newAmount});`;
+            };
+        } catch (e) {
+            console.error(e);
+
+            return NextResponse.json(
+                {
+                    "error": "Something went wrong updating the database"
+                },
+                { status: 500 }
+            );
+        };
+
+        return NextResponse.json(
+            {},
+            { status: 200 }
         );
     };
-
-    return NextResponse.json(
-        {},
-        { status: 200 }
-    );
 };
 
 // Create Stickers
