@@ -261,6 +261,28 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
+        const stickerData = await sql`GET * FROM allstickers WHERE name=${name} OR image=${image}`;
+
+        if (stickerData.length === 0) {
+            return NextResponse.json(
+                {
+                    "error": "That sticker already exists"
+                },
+                { status: 400 }
+            )
+        };
+    } catch (e) {
+        console.error(e);
+
+        return NextResponse.json(
+            {
+                "error": "Something went wrong checking if the sticker exists"
+            },
+            { status: 500 }
+        );
+    };
+
+    try {
         await sql`INSERT INTO allstickers (name, image, userid) VALUES (${name}, ${image.trim()}, ${userId});`;
     } catch (e) {
         return NextResponse.json(
