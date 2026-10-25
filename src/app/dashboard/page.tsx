@@ -89,9 +89,9 @@ export default function Page() {
             <h1 className={pageStyles.title}>Dashboard</h1>
 
             <span className={`grid ${pageStyles.majorStats} ${pageStyles.majorStatsGrid}`}>
-                <Card className='row1 col1'>
+                <Card className='row1 col1' aria-labelledby="stickerCountTitle">
                     <Card.Header>
-                        <Card.Title>{stickerCount}</Card.Title>
+                        <Card.Title id="stickerCountTitle">{stickerCount}</Card.Title>
 
                         <Card.Description>
                             Total # of Stickers
@@ -101,9 +101,9 @@ export default function Page() {
                     </Card.Header>
                 </Card>
 
-                <Card className='row1 col2'>
+                <Card className='row1 col2' aria-labelledby='uniqueStickerCountTitle'>
                     <Card.Header>
-                        <Card.Title>{uniqueStickers}</Card.Title>
+                        <Card.Title id="uniqueStickerCountTitle">{uniqueStickers}</Card.Title>
 
                         <Card.Description>
                             Number of unique sticker designs
@@ -115,7 +115,7 @@ export default function Page() {
             <span className={`grid ${pageStyles.managementTable}`}>
                 <Table className='row1 col1'>
                     <Table.ScrollContainer>
-                        <Table.Content>
+                        <Table.Content aria-label="Sticker you do not have">
                             <Table.Header>
                                 <Table.Column isRowHeader>Stickers You Need</Table.Column>
                                 <Table.Column>Picture</Table.Column>
@@ -132,7 +132,7 @@ export default function Page() {
 
                 <Table className='row1 col2'>
                     <Table.ScrollContainer>
-                        <Table.Content>
+                        <Table.Content aria-label="Stickers on your wishlist">
                             <Table.Header>
                                 <Table.Column isRowHeader>Wishlist</Table.Column>
                                 <Table.Column>Picture</Table.Column>
@@ -148,7 +148,7 @@ export default function Page() {
 
                 <Table className={`${pageStyles.fullGrid}`}>
                     <Table.ScrollContainer>
-                        <Table.Content>
+                        <Table.Content aria-label="Stickers you own">
                             <Table.Header>
                                 <Table.Column isRowHeader>Sticker Name</Table.Column>
                                 <Table.Column>Picture</Table.Column>
