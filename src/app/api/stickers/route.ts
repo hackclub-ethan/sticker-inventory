@@ -21,7 +21,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const userId: string = session["session"]["userId"];
 
     const allStickers = await sql`SELECT * FROM allstickers;`;
-    const ownedStickers = await sql`SELECT stickername, quantity FROM stickers WHERE userid = ${userId};`;
+    const ownedStickers = await sql`SELECT stickername, quantity, image FROM stickers WHERE userid = ${userId};`;
     const ownedNames: string[] = [];
 
     for (let i = 0; i < ownedStickers.length; i++) {
@@ -35,7 +35,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             unOwned: unOwnedStickers,
             owned: ownedStickers,
             all: allStickers
-        }
+        },
+        { status: 200 }
     );
 };
 

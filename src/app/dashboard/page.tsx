@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 
 import { authClient } from '@/src/lib/auth-client';
 
-import { Card, Table, TableCell } from '@heroui/react';
+import { Card, Table } from '@heroui/react';
 
 import pageStyles from "./dashboardStyles.module.css";
 import { StickerCard } from './components/sticker';
@@ -28,17 +28,51 @@ export default function Page() {
     const [stickerCount, setStickerCount] = useState(0);
     const [stickerCountLastUpdate, setStickerCountLastUpdate] = useState("");
     const [uniqueStickers, setUniqueStickers] = useState(0);
+    const [neededStickers, setNeededStickers] = useState(<></>);
+    const [wishList, setWishList] = useState(<></>);
+    const [ownedStickers, setOwnedStickers] = useState(<></>);
+
+    function generateStickerList(stickers: any[]) {
+        return (
+            <>
+                {stickers.map((sticker: any) => (
+                    <StickerCard name={sticker["name"] ? sticker["name"] : sticker["stickername"]} image={sticker["image"]} key={sticker["name"] ? sticker["name"] : sticker["stickername"]} amount={sticker.quantity ? sticker.quantity : 0} />
+                ))}
+            </>
+        );
+    };
     
-    function getStickerInfo() {
-        setStickerCount(67);
-        setStickerCountLastUpdate(new Date().toLocaleString());
+    function getStickerInfo() {        
+        fetch("../api/stickers")
+        .then(res => res.json())
+        .then(json => {
+            const unOwned = json["unOwned"];
+            const owned = json["owned"];
+            const all = json["all"];
+
+            console.log(owned)
+
+            setUniqueStickers(owned.length);
+            
+            let numOfStickers = 0;
+
+            for (let i = 0; i < owned.length; i++) {
+                numOfStickers += owned[i]["quantity"];
+            };
+
+            setStickerCount(numOfStickers);
+            setStickerCountLastUpdate(new Date().toLocaleString());
+
+            setNeededStickers(generateStickerList(unOwned));
+            setOwnedStickers(generateStickerList(owned));
+
+        })
+        .catch(e => {
+            console.error(e);
+        });
     };
 
-    useEffect(getStickerInfo);
-
-    function getUniqueStickers() {
-        setUniqueStickers(0);
-    };
+    useEffect(getStickerInfo, []);
     
     return (
         <span className={pageStyles.page}>
@@ -79,7 +113,7 @@ export default function Page() {
                             </Table.Header>
 
                             <Table.Body>
-                                <StickerCard />
+                                {neededStickers}
                             </Table.Body>
                         </Table.Content>
                     </Table.ScrollContainer>
@@ -96,7 +130,7 @@ export default function Page() {
                             </Table.Header>
 
                             <Table.Body>
-                                <StickerCard />
+
                             </Table.Body>
                         </Table.Content>
                     </Table.ScrollContainer> 
@@ -112,7 +146,7 @@ export default function Page() {
                             </Table.Header>
 
                             <Table.Body>
-                                <StickerCard />
+                                {ownedStickers}
                             </Table.Body>
                         </Table.Content>
                     </Table.ScrollContainer>

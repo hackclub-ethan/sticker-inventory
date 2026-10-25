@@ -45,6 +45,7 @@ CREATE TABLE "stickers" (
 CREATE TABLE "allStickers" (
   "name" text PRIMARY KEY,
   "image" text NOT NULL UNIQUE,
-  "userid" text NOT NULL
+  "userid" text NOT NULL,
+  "image" text NOT NULL
 );
 ```
