@@ -48,4 +48,11 @@ CREATE TABLE "allStickers" (
   "userid" text NOT NULL,
   "image" text NOT NULL
 );
+
+CREATE TABLE "wishlist" (
+  "id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "wishlist_id_seq"),
+  "stickername" text NOT NULL,
+  "userid" text NOT NULL,
+  "image" text NOT NULL
+);
 ```

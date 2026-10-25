@@ -102,8 +102,10 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         };
 
         if (!newName || newName.trim() === "") {
+            // Change the image
             try {
-                await sql`UPDATE allstickers SET image = ${newImage} WHERE userid=${userId} AND name=${stickerName};`;
+                await sql`UPDATE allstickers SET image=${newImage} WHERE userid=${userId} AND name=${stickerName};`;
+                await sql`UPDATE wishlist SET image=${newImage} WHERE stickername=${stickerName};`;
             } catch (e) {
                 console.error(e);
 
@@ -129,8 +131,10 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
                 );
             };
         } else {
+            // Change both
             try {
                 await sql`UPDATE allstickers SET name=${newName}, image=${newImage} WHERE userid=${userId} AND name=${stickerName};`;
+                await sql`UPDATE wishlist SET image=${newImage} WHERE stickername=${stickerName};`;
             } catch(e) {
                 console.error(e);
 

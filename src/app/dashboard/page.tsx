@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-
 import { useRouter } from 'next/navigation'
 
-import { authClient } from '@/src/lib/auth-client';
+import { useEffect, useState } from 'react';
 
 import { Card, Table, toast } from '@heroui/react';
 
-import pageStyles from "./dashboardStyles.module.css";
+import { authClient } from '@/src/lib/auth-client';
+
 import { StickerCard } from './components/sticker';
+
+import pageStyles from "./dashboardStyles.module.css";
 
 export default function Page() {
     const router = useRouter();
