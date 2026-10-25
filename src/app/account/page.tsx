@@ -36,7 +36,7 @@ export default function Page() {
                             </Modal.Header>
 
                             <Modal.Body>
-                                Are you ABSOLUTLY SURE you want to delete your account? This will delete ALL user data and CAN NOT be undone.
+                                Are you ABSOLUTLY SURE you want to delete your account? This will delete MOST user data and CAN NOT be undone. The only that will not be deleted are stickers you created (if applicable)
                                 <br />
                                 <br />
                                 <b>Disregard above, that is a placeholder until I make the API</b>
