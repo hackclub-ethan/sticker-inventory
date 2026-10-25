@@ -104,6 +104,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             try {
                 await sql`UPDATE allstickers SET image = ${newImage} WHERE userid=${userId} AND name=${stickerName};`;
             } catch (e) {
+                console.error(e);
+
                 return NextResponse.json(
                     {
                         "error": "Something went wrong editing sticker image"
@@ -116,6 +118,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             try {
                 await sql`UPDATE allstickers SET name=${newName} WHERE userid=${userId} AND image=${currentStickerData[0]["image"]};`;
             } catch (e) {
+                console.error(e);
+
                 return NextResponse.json(
                     {
                         "error": "Something went wrong editing the sticker name"
@@ -127,6 +131,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             try {
                 await sql`UPDATE allstickers SET name=${newName}, image=${newImage} WHERE userid=${userId} AND name=${stickerName};`;
             } catch(e) {
+                console.error(e);
+
                 return NextResponse.json(
                     {
                         "error": "Something went wrong updating the name and/or image"
@@ -180,6 +186,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
                 inDb = true;
             };
         } catch (e) {
+            console.error(e);
+
             return NextResponse.json(
                 {
                     "error": "Somethign went wrong reading the database"
@@ -285,6 +293,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         await sql`INSERT INTO allstickers (name, image, userid) VALUES (${name}, ${image.trim()}, ${userId});`;
     } catch (e) {
+        console.error(e);
+
         return NextResponse.json(
             {
                 "error": "Something went wrong creating sticker"
@@ -345,6 +355,8 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
             );
         };
     } catch (e) {
+        console.error(e);
+
         return NextResponse.json(
             {
                 "error": "Something went wrong checking if the sticker exists/you own it"
@@ -356,6 +368,8 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     try {
         await sql`DELETE FROM allstickers WHERE userid=${userId} AND name=${stickerName};`;
     } catch (e) {
+        console.error(e);
+        
         return NextResponse.json(
             {
                 "error": "Something went wrong deleting the sticker"
