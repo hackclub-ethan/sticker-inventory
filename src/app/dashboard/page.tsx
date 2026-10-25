@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 
 import { authClient } from '@/src/lib/auth-client';
 
-import { Card, Table } from '@heroui/react';
+import { Card, Table, toast } from '@heroui/react';
 
 import pageStyles from "./dashboardStyles.module.css";
 import { StickerCard } from './components/sticker';
@@ -42,15 +42,19 @@ export default function Page() {
         );
     };
     
-    function getStickerInfo() {        
+    function getStickerInfo() {
         fetch("../api/stickers")
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Response was not ok");
+            };
+
+            return res.json()
+        })
         .then(json => {
             const unOwned = json["unOwned"];
             const owned = json["owned"];
             const all = json["all"];
-
-            console.log(owned)
 
             setUniqueStickers(owned.length);
             
@@ -69,6 +73,12 @@ export default function Page() {
         })
         .catch(e => {
             console.error(e);
+
+            toast("Something went wrong getting stickers", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
         });
     };
 

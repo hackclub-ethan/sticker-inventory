@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { Table, NumberField } from "@heroui/react";
+import { Table, NumberField, toast } from "@heroui/react";
 
 export function StickerCard(props: any) {
     const name = props.name;
@@ -18,6 +18,20 @@ export function StickerCard(props: any) {
                 amount: e
             })
         })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Response was not ok");
+            };
+        })
+        .catch(e => {
+            console.error(e);
+
+            toast("Something went wrong changing the number of stickers", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+        });
     };
 
     return (
