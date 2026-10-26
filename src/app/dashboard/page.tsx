@@ -9,6 +9,7 @@ import { Card, Table, toast } from '@heroui/react';
 import { authClient } from '@/src/lib/auth-client';
 
 import { StickerCard } from './components/sticker';
+import { WishList } from '../wishlist/displayWishlist';
 
 import pageStyles from "./dashboardStyles.module.css";
 
@@ -140,9 +141,7 @@ export default function Page() {
                                 <Table.Column>Quantity</Table.Column>
                             </Table.Header>
 
-                            <Table.Body>
-
-                            </Table.Body>
+                            <WishList />
                         </Table.Content>
                     </Table.ScrollContainer> 
                 </Table>

@@ -8,7 +8,7 @@ import { Button, Form, Label, ListBox, Table, toast, Select } from '@heroui/reac
 
 import { authClient } from '@/src/lib/auth-client';
 
-import { StickerCard } from '../dashboard/components/sticker';
+import { WishList } from './displayWishlist';
 
 export default function Page() {
     const router = useRouter();
@@ -24,31 +24,7 @@ export default function Page() {
         router.replace("/signin");
     };
 
-    const [wishList, setWishList] = useState([]);
     const [allStickers, setAllStickers] = useState([]);
-
-    function getWishList() {
-         fetch("../api/wishlist")
-         .then(res => {
-            if (!res.ok) {
-                throw new Error("Response was not ok");
-            };
-
-            return res.json();
-         })
-         .then(json => {            
-            setWishList(json["wishlist"]);
-        })
-        .catch(e => {
-            console.error(e);
-
-            toast("Something went wrong getting wishlist", {
-                actionProps: {
-                    variant: "danger"
-                }
-            });
-        });
-    };
 
     function getAllStickers() {
         fetch("../api/stickers")
@@ -103,7 +79,6 @@ export default function Page() {
     };
 
     useEffect(() => {
-        getWishList();
         getAllStickers();
     }, []);
 
@@ -145,11 +120,7 @@ export default function Page() {
                         </Table.Header>
 
                         
-                        <Table.Body>
-                            {wishList.map((sticker: any) => (
-                                <StickerCard name={sticker["stickername"]} image={sticker["image"]} key={sticker["stickername"]} amount={0} /> 
-                            ))}
-                        </Table.Body>
+                        <WishList />
                     </Table.Content>
                 </Table.ScrollContainer>
             </Table>
