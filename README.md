@@ -1,5 +1,13 @@
 # Sticker Inventory
 
+As Hackclubers many of us have a lot of stickers (and when I say a lot, I mean a lot). I do not know about others but I know I have very little idea which stickers I have and how many of each I have. That is why I made this project so I can get an idea of what stickers I have.
+
+In addition I added the ability to add what ever sticker you want so you can add any sticker you may have even if they are custom and you made them!
+
+## Use
+
+To use the project you can go to this link https://sticker-inventory.netlify.app/
+
 ## Dev
 
 ### Envirment Varibles

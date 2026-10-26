@@ -68,7 +68,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     let stickerData;
     
     try {
-        stickerData = await sql`SELECT * FROM allstickers WHERE name=${stickerName};`;
+        stickerData = await sql`SELECT * FROM allstickers WHERE name=${stickerName.trim()};`;
     } catch (e) {
         console.error(e);
 
@@ -90,7 +90,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        await sql`INSERT INTO wishlist (stickername, userid, image) VALUES (${stickerName}, ${userId}, ${stickerData[0]["image"]});`;
+        await sql`INSERT INTO wishlist (stickername, userid, image) VALUES (${stickerName.trim()}, ${userId}, ${stickerData[0]["image"]});`;
     } catch (e) {
         console.error(e);
 

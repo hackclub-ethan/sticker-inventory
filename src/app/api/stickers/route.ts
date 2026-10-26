@@ -78,7 +78,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     };
 
     if (editSticker) {
-        const currentStickerData = await sql`SELECT * FROM allstickers WHERE userid=${userId} AND name=${stickerName};`;
+        const currentStickerData = await sql`SELECT * FROM allstickers WHERE userid=${userId} AND name=${stickerName.trim()};`;
 
         if (currentStickerData.length <= 0) {
             return NextResponse.json(
@@ -89,8 +89,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             );
         };
 
-        const newName: string|undefined|null = body["newName"];
-        const newImage: string|undefined|null = body["newImage"];
+        const newName: string = body["newName"];
+        const newImage: string = body["newImage"];
 
         if ((!newName || newName.trim() === "") && (!newImage || newImage.trim() === "")) {
             return NextResponse.json(
@@ -104,8 +104,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         if (!newName || newName.trim() === "") {
             // Change the image
             try {
-                await sql`UPDATE allstickers SET image=${newImage} WHERE userid=${userId} AND name=${stickerName};`;
-                await sql`UPDATE wishlist SET image=${newImage} WHERE stickername=${stickerName};`;
+                await sql`UPDATE allstickers SET image=${newImage.trim()} WHERE userid=${userId} AND name=${stickerName};`;
+                await sql`UPDATE wishlist SET image=${newImage.trim()} WHERE stickername=${stickerName};`;
             } catch (e) {
                 console.error(e);
 
@@ -119,7 +119,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         } else if (!newImage || newImage.trim() === "") {
             // Change the name
             try {
-                await sql`UPDATE allstickers SET name=${newName} WHERE userid=${userId} AND image=${currentStickerData[0]["image"]};`;
+                await sql`UPDATE allstickers SET name=${newName.trim()} WHERE userid=${userId} AND image=${currentStickerData[0]["image"]};`;
             } catch (e) {
                 console.error(e);
 
@@ -133,8 +133,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         } else {
             // Change both
             try {
-                await sql`UPDATE allstickers SET name=${newName}, image=${newImage} WHERE userid=${userId} AND name=${stickerName};`;
-                await sql`UPDATE wishlist SET image=${newImage} WHERE stickername=${stickerName};`;
+                await sql`UPDATE allstickers SET name=${newName.trim()}, image=${newImage.trim()} WHERE userid=${userId} AND name=${stickerName};`;
+                await sql`UPDATE wishlist SET image=${newImage.trim()} WHERE stickername=${stickerName};`;
             } catch(e) {
                 console.error(e);
 
@@ -273,7 +273,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        const stickerData = await sql`GET * FROM allstickers WHERE name=${name} OR image=${image}`;
+        const stickerData = await sql`GET * FROM allstickers WHERE name=${name.trim()} OR image=${image.trim()}`;
 
         if (stickerData.length === 0) {
             return NextResponse.json(
@@ -295,7 +295,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        await sql`INSERT INTO allstickers (name, image, userid) VALUES (${name}, ${image.trim()}, ${userId});`;
+        await sql`INSERT INTO allstickers (name, image, userid) VALUES (${name.trim()}, ${image.trim()}, ${userId});`;
     } catch (e) {
         console.error(e);
 
@@ -341,7 +341,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        const sticker = await sql`SELECT * FROM allstickers WHERE name=${stickerName};`;
+        const sticker = await sql`SELECT * FROM allstickers WHERE name=${stickerName.trim()};`;
 
         if (sticker.length === 0) {
             return NextResponse.json(
