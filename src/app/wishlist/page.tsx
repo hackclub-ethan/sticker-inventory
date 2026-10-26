@@ -8,7 +8,7 @@ import { Button, Form, Label, ListBox, Table, toast, Select } from '@heroui/reac
 
 import { authClient } from '@/src/lib/auth-client';
 
-import { StickerCard } from '../stickers/sticker';
+import { StickerCard } from '../dashboard/components/sticker';
 
 export default function Page() {
     const router = useRouter();
@@ -25,7 +25,6 @@ export default function Page() {
     };
 
     const [wishList, setWishList] = useState([]);
-    const [wishListJSX, setWishListJSX] = useState(<></>);
     const [allStickers, setAllStickers] = useState([]);
 
     function getWishList() {
@@ -108,16 +107,6 @@ export default function Page() {
         getAllStickers();
     }, []);
 
-    useEffect(() => {
-        setWishListJSX(
-            <Table.Body>
-                {wishList.map((sticker: any) => (
-                    <StickerCard name={sticker["stickername"]} image={sticker["image"]} key={sticker["stickername"]} amount={sticker["amount"]} /> 
-                ))}
-            </Table.Body>
-        );
-    }, [wishList]);
-
     return (
         <>
             <h1>Wishllist</h1>
@@ -156,7 +145,11 @@ export default function Page() {
                         </Table.Header>
 
                         
-                        {wishListJSX}
+                        <Table.Body>
+                            {wishList.map((sticker: any) => (
+                                <StickerCard name={sticker["stickername"]} image={sticker["image"]} key={sticker["stickername"]} amount={0} /> 
+                            ))}
+                        </Table.Body>
                     </Table.Content>
                 </Table.ScrollContainer>
             </Table>
