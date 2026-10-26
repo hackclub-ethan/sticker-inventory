@@ -1,0 +1,17 @@
+.page {
+    margin-left: 5%;
+    margin-right: 5%;
+}
+
+.options {
+    max-width: 80%;
+
+    display: inline-block;
+
+    margin-right: 0.5%;
+    margin-top: 1%;
+}
+
+.table {
+    margin-top: 1%;
+}

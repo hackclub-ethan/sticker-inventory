@@ -10,6 +10,8 @@ import { authClient } from '@/src/lib/auth-client';
 
 import { WishList } from './displayWishlist';
 
+import pageStyles from "./page.module.css";
+
 export default function Page() {
     const router = useRouter();
         
@@ -83,13 +85,11 @@ export default function Page() {
     }, []);
 
     return (
-        <>
-            <h1>Wishllist</h1>
+        <span className={`${pageStyles.page}`}>
+            <h1>Wishlist</h1>
 
             <Form onSubmit={addWishListItem}>
-                <Select placeholder='Sticker to add to Wishlist' name="sticker">
-                    <Label>What to add</Label>
-
+                <Select placeholder='Sticker to add to Wishlist' aria-label="Sticker to add to wishlist" name="sticker" className={`${pageStyles.options}`}>
                     <Select.Trigger>
                         <Select.Value />
                         <Select.Indicator />
@@ -110,7 +110,7 @@ export default function Page() {
                 <Button type='submit'>Add to Wishlist</Button>
             </Form>
 
-            <Table>
+            <Table className={`${pageStyles.table}`}>
                 <Table.ScrollContainer>
                     <Table.Content aria-label='Wishlist'>
                         <Table.Header>
@@ -124,6 +124,6 @@ export default function Page() {
                     </Table.Content>
                 </Table.ScrollContainer>
             </Table>
-        </>
+        </span>
     );
 };
