@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { Toast } from "@heroui/react";
 
+import { ThemeSwitch } from "./components/themeSwitcher";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,6 +32,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Toast.Provider />
         {children}
+
+        <ThemeSwitch />
       </body>
     </html>
   );
