@@ -56,7 +56,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     const userId: string = session["session"]["userId"];
 
     const body: any = await req.json();
-    const editSticker = body["editSticker"];
+    const editSticker: boolean|null|undefined = body["editSticker"];
     const stickerName: string|null|undefined = body["stickerName"];
 
     if (typeof editSticker !== "boolean") {
