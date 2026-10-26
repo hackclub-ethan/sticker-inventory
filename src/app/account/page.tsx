@@ -21,7 +21,7 @@ export default function Page() {
     };
 
     function deleteAccount(e: any) {
-        fetch("../../account", {
+        fetch("../../api/account", {
             method: "DELETE"
         })
         .then(res => {

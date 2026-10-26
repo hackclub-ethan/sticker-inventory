@@ -33,9 +33,13 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        authClient.deleteUser({
-            callbackURL: "/"
+        await auth.api.removeUser({
+            body: {
+                userId: userId
+            }
         });
+
+        
     } catch (e) {
         return NextResponse.json(
             {
