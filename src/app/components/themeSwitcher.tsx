@@ -1,12 +1,14 @@
 "use client";
 
-import { PressEvent, Switch, useTheme } from "@heroui/react";
+import { useTheme } from "next-themes";
+
+import { PressEvent, Switch } from "@heroui/react";
 
 import { Moon, Sun } from "@gravity-ui/icons";
 
 export function ThemeSwitch() {
-    const {resolvedTheme, setTheme, theme} = useTheme("system");
-    
+    const {resolvedTheme, setTheme, theme} = useTheme();
+
     function changeTheme(darkMode: boolean): void {
         setTheme(darkMode ? "dark" : "light");
     };

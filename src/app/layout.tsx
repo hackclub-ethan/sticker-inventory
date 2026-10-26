@@ -1,4 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+
+import { ThemeProvider } from "next-themes";
 
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -23,17 +25,29 @@ export const metadata: Metadata = {
   description: "Sticker Inventory website",
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
+};
+
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
-        <Toast.Provider />
-        {children}
+      <body className="min-h-full flex flex-col bg-background text-foreground">
+        <ThemeProvider attribute="class" defaultTheme="light">
+          <Toast.Provider />
 
-        <ThemeSwitch />
+          {children}
+          
+          <ThemeSwitch />
+        </ThemeProvider>
       </body>
     </html>
   );
