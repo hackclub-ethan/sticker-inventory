@@ -76,10 +76,11 @@ export default function Page() {
         .catch(e => {
             console.error(e);
 
-            toast("Something went wrong getting stickers", {
+            toast("Something went wrong", {
                 actionProps: {
                     variant: "danger"
-                }
+                },
+                description: "Something went wrong trying to get your stickers"
             });
         });
     };

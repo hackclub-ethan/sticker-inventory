@@ -43,10 +43,11 @@ export default function Page() {
         .catch(e => {
             console.error(e);
 
-            toast("Something went wrong getting stickers", {
+            toast("Something went wrong", {
                 actionProps: {
                     variant: "danger"
-                }
+                },
+                description: "Something went wrong getting stickers"
             });
         });
     };
@@ -72,10 +73,11 @@ export default function Page() {
         .catch(e => {
             console.error(e);
 
-            toast("Something went wrong adding to wishlist", {
+            toast("Something went wrong", {
                 actionProps: {
                     variant: "danger"
-                }
+                },
+                description: "Something went wrong adding the sticker to your wishlist"
             });
         });
     };

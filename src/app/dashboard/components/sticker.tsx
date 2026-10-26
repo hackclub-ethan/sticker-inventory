@@ -26,10 +26,11 @@ export function StickerCard(props: any) {
         .catch(e => {
             console.error(e);
 
-            toast("Something went wrong changing the number of stickers", {
+            toast("Something went wrong", {
                 actionProps: {
                     variant: "danger"
-                }
+                },
+                description: "Somethign went wrong changing how many stickers you have"
             });
         });
     };

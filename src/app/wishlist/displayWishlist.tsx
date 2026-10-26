@@ -22,10 +22,11 @@ export function WishList() {
         .catch(e => {
             console.error(e);
 
-            toast("Something went wrong getting wishlist", {
+            toast("Something went wrong", {
                 actionProps: {
                     variant: "danger"
-                }
+                },
+                description: "Something went wrong getting your wishlist"
             });
         });
     };

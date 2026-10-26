@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Stickers!",
+  title: "Stickers! but inventory",
   description: "Sticker Inventory website",
 };
 
@@ -33,4 +33,4 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </body>
     </html>
   );
-}
+};

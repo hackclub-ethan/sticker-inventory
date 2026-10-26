@@ -32,10 +32,11 @@ export default function Page() {
         .catch(e => {
             console.error(e);
 
-            toast("Something went wrong deleting your account", {
+            toast("Something went wrong", {
                 actionProps: {
                     variant: "danger"
-                }
+                },
+                description: "Your account was not deleted. Some user data may have but not everything"
             });
         });
     };
