@@ -6,7 +6,7 @@ In addition I added the ability to add what ever sticker you want so you can add
 
 ## Use
 
-To use the project you can go to this link https://sticker-inventory.netlify.app/
+To use the project you can go to this link https://sticker-inventory.netlify.app/dashboard
 
 ## Dev
 
@@ -63,4 +63,23 @@ CREATE TABLE "wishlist" (
   "userid" text NOT NULL,
   "image" text NOT NULL
 );
+```
+
+### Build
+
+Run the following commands to build the site
+
+```bash
+npm i
+npm run build
+```
+
+### Deploy
+
+```bash
+# For dev
+npm run dev
+
+# For prod
+npm run start
 ```
