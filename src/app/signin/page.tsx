@@ -29,10 +29,40 @@ export default function Page() {
             callbackURL: "/api/auth/callback/hackclub"
         });
     };
+handleDemoLogin
+    async function handleDemoLogin(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+        const username = formData.get("username")?.toString();
+        const password = formData.get("pwd")?.toString();
+
+        console.log(username)
+        console.log(password)
+
+        const { data, error } = await authClient.signIn.username({
+            username: username || "",
+            password: password || "",
+        });
+    };
     
     return (
-        <form onSubmit={handleSignIn}>
-            <Button type='submit'>Sign In with Hackclub</Button>
-        </form>
+        <>
+            <form onSubmit={handleSignIn}>
+                <Button type='submit'>Sign In with Hackclub</Button>
+            </form>
+
+            <form onSubmit={handleDemoLogin}>
+                <h2>Demo login</h2>
+
+                <label htmlFor='username'>Username:</label>
+                <input type='text' name="username" id="name" required />
+
+                <label htmlFor='pwd'>Password:</label>
+                <input type='password' name='pwd' id='pwd' required />
+
+                <Button type='submit'>Sign in</Button>
+            </form>
+        </>
     );
 };

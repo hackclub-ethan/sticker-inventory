@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import { genericOAuth } from "better-auth/plugins";
+import { genericOAuth, username } from "better-auth/plugins";
 
 import { Pool } from "pg";
 
@@ -24,11 +24,15 @@ export const auth = betterAuth({
 					})
                 }
             ]
-        })
+        }),
+        username()
     ],
     user: {
         deleteUser: {
             enabled: true
         }
+    },
+    emailAndPassword: {
+        enabled: true
     }
 });
