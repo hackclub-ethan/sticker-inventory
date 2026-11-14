@@ -14,7 +14,7 @@ export function ThemeSwitch() {
     };
 
     return (
-        <Switch onChange={changeTheme}>
+        <Switch onChange={changeTheme} className={`inline`}>
             {({isSelected}) => (
             <Switch.Content>
               <Switch.Control>

@@ -4,7 +4,7 @@ import { ThemeProvider } from "next-themes";
 
 import { Geist, Geist_Mono } from "next/font/google";
 
-import { Toast } from "@heroui/react";
+import { Link, Toast } from "@heroui/react";
 
 import { ThemeSwitch } from "./components/themeSwitcher";
 
@@ -41,11 +41,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider defaultTheme="light">
-          <Toast.Provider />
-
           {children}
-          
-          <ThemeSwitch />
+
+          <footer>
+            <Link href="/">Home</Link> | <Link href="/dashboard">Dashboard</Link> | <Link href="/wishlist">Wishlist</Link> | <Link href="account">Account</Link> | <ThemeSwitch />
+          </footer>
+
+          <Toast.Provider />
         </ThemeProvider>
       </body>
     </html>

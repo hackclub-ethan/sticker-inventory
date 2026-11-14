@@ -76,3 +76,12 @@ body {
 .row3 {
   grid-row: 3;
 }
+
+footer {
+  width: 100vw;
+  text-align: center;
+
+  position: fixed;
+
+  bottom: 5%;
+}
