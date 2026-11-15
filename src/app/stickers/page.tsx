@@ -1,15 +1,52 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+import { toast } from "@heroui/react";
+
 import { StickerCard } from "./sticker";
 
+import { allStickersTable } from "@/src/utils/types";
+
+import styles from "./stickers.module.css";
+
 export default function Page() {
+    const [stickers, setStickers] = useState<allStickersTable[]>([]);
+
+    function getStickers(): void {
+        fetch("../api/stickers")
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Response was not ok");
+            };
+
+            return res.json();
+        })
+        .then(json => {
+            setStickers(json["all"]);
+        })
+        .catch(e => {
+            console.error(e);
+
+            toast("Something went wrong getting stickers", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+        });
+    };
+
+    useEffect(getStickers, []);
+
     return (
         <>
             <p>Nothing much here yet. Eventally it will have a list of all Hackclub stickers (hopefully)</p>
 
-            <StickerCard event="General" name="Orpheus Flag" image="https://user-cdn.hackclub-assets.com/019d730b-8eb6-7050-9ba5-cd9ed9949958/Ud0ZsmQ08LUg6Zdz1UiAoqUSrP9VXz19VGWb4ZL-nJs" />
-            <br />
-            <StickerCard event="General" name="Orphmoji Yippee" image="https://user-cdn.hackclub-assets.com/019d730b-ad49-752d-b352-3d2476050a80/k9mMHxhtueYKK9F1p7WcTNrplskR78joIsvFkLAWNHw" />
-            <br />
-            <StickerCard event="General" name="Inside" image="https://user-cdn.hackclub-assets.com/019d730b-44d5-7dff-a0ac-98a3be898a20/mhABU_nGcch7Baek8TdOGxLTZzi0l8oiBBlweCJfKT8" />
+            <div className={`grid ${styles.container}`}>
+                {stickers.map((sticker: allStickersTable) => (
+                    <StickerCard name={sticker.name} image={sticker.image} key={sticker.name} />
+                ))}
+            </div>
         </>
     );
 };

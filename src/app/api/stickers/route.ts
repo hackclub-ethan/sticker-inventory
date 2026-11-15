@@ -12,49 +12,62 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth.api.getSession({headers: await headers()});
 
     if (!session) {
+        try {
+            const allStickers: allStickersTable[] = await sql`SELECT * FROM allstickers;`;
+
+            return NextResponse.json(
+                {
+                    "all": allStickers
+                },
+                { status: 200 }
+            );
+        } catch (e) {
+            console.error(e);
+
+            return NextResponse.json(
+                {
+                    "error": "Something went wrong getting stickers"
+                },
+                { status: 500 }
+            );
+        };
+    } else {
+        const userId: string = session["session"]["userId"];
+
+        let allStickers: allStickersTable[];
+        let ownedStickers;
+
+        try {
+            allStickers = await sql`SELECT * FROM allstickers;`;
+            ownedStickers = await sql`SELECT stickername, quantity, image FROM stickers WHERE userid = ${userId};`;
+        } catch (e) {
+            console.error(e);
+
+            return NextResponse.json(
+                {
+                    "error": "Something went wrong getting stickers"
+                },
+                { status: 500 }
+            );
+        };
+
+        const ownedNames: string[] = [];
+
+        for (let i = 0; i < ownedStickers.length; i++) {
+            ownedNames.push(ownedStickers[i]["stickername"]);
+        };
+        
+        const unOwnedStickers = allStickers.filter((sticker: any) => !ownedNames.includes(sticker["name"]));
+
         return NextResponse.json(
             {
-                "error": "Not authenticated"
+                unOwned: unOwnedStickers,
+                owned: ownedStickers,
+                all: allStickers
             },
-            { status: 403 }
+            { status: 200 }
         );
     };
-
-    const userId: string = session["session"]["userId"];
-
-    let allStickers: allStickersTable[];
-    let ownedStickers;
-
-    try {
-        allStickers = await sql`SELECT * FROM allstickers;`;
-        ownedStickers = await sql`SELECT stickername, quantity, image FROM stickers WHERE userid = ${userId};`;
-    } catch (e) {
-        console.error(e);
-
-        return NextResponse.json(
-            {
-                "error": "Something went wrong getting stickers"
-            },
-            { status: 500 }
-        );
-    };
-
-    const ownedNames: string[] = [];
-
-    for (let i = 0; i < ownedStickers.length; i++) {
-        ownedNames.push(ownedStickers[i]["stickername"]);
-    };
-    
-    const unOwnedStickers = allStickers.filter((sticker: any) => !ownedNames.includes(sticker["name"]));
-
-    return NextResponse.json(
-        {
-            unOwned: unOwnedStickers,
-            owned: ownedStickers,
-            all: allStickers
-        },
-        { status: 200 }
-    );
 };
 
 // Change Sticker Amount/Edit custom Sticker
