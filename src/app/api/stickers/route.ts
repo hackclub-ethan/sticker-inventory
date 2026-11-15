@@ -20,8 +20,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const userId: string = session["session"]["userId"];
 
-    const allStickers = await sql`SELECT * FROM allstickers;`;
-    const ownedStickers = await sql`SELECT stickername, quantity, image FROM stickers WHERE userid = ${userId};`;
+    let allStickers;
+    let ownedStickers;
+
+    try {
+        allStickers = await sql`SELECT * FROM allstickers;`;
+        ownedStickers = await sql`SELECT stickername, quantity, image FROM stickers WHERE userid = ${userId};`;
+    } catch (e) {
+        console.error(e);
+
+        return NextResponse.json(
+            {
+                "error": "Something went wrong getting stickers"
+            },
+            { status: 500 }
+        );
+    };
+
     const ownedNames: string[] = [];
 
     for (let i = 0; i < ownedStickers.length; i++) {
@@ -54,6 +69,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     };
 
     const userId: string = session["session"]["userId"];
+    const isAdmin: boolean = session["user"]["role"] === "admin" ? true : false;
 
     const body: any = await req.json();
     const editSticker: boolean|null|undefined = body["editSticker"];
@@ -78,9 +94,22 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     };
 
     if (editSticker) {
-        const currentStickerData = await sql`SELECT * FROM allstickers WHERE userid=${userId} AND name=${stickerName.trim()};`;
+        let currentStickerData;
 
-        if (currentStickerData.length <= 0) {
+        try {
+            currentStickerData = await sql`SELECT * FROM allstickers WHERE userid=${userId} AND name=${stickerName.trim()};`;
+        } catch (e) {
+            console.error(e);
+
+            return NextResponse.json(
+                {
+                    "error": "Something went wrong getting the sticker"
+                },
+                { status: 500 }
+            );
+        };
+
+        if (currentStickerData.length <= 0 && !isAdmin) {
             return NextResponse.json(
                 {
                     "error": "No sticker with that name found that you created"
@@ -104,7 +133,12 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         if (!newName || newName.trim() === "") {
             // Change the image
             try {
-                await sql`UPDATE allstickers SET image=${newImage.trim()} WHERE userid=${userId} AND name=${stickerName};`;
+                if (isAdmin) {
+                    await sql`UPDATE allstickers SET image=${newImage.trim()} WHERE name=${stickerName};`;
+                } else {
+                    await sql`UPDATE allstickers SET image=${newImage.trim()} WHERE userid=${userId} AND name=${stickerName};`;
+                };
+
                 await sql`UPDATE wishlist SET image=${newImage.trim()} WHERE stickername=${stickerName};`;
             } catch (e) {
                 console.error(e);
@@ -119,7 +153,11 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         } else if (!newImage || newImage.trim() === "") {
             // Change the name
             try {
-                await sql`UPDATE allstickers SET name=${newName.trim()} WHERE userid=${userId} AND image=${currentStickerData[0]["image"]};`;
+                if (isAdmin) {
+                    await sql`UPDATE allstickers SET name=${newName.trim()} WHERE image=${currentStickerData[0]["image"]};`;
+                } else {
+                    await sql`UPDATE allstickers SET name=${newName.trim()} WHERE userid=${userId} AND image=${currentStickerData[0]["image"]};`;
+                };
             } catch (e) {
                 console.error(e);
 
@@ -133,7 +171,12 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         } else {
             // Change both
             try {
-                await sql`UPDATE allstickers SET name=${newName.trim()}, image=${newImage.trim()} WHERE userid=${userId} AND name=${stickerName};`;
+                if (isAdmin) {
+                    await sql`UPDATE allstickers SET name=${newName.trim()}, image=${newImage.trim()} name=${stickerName};`;
+                } else {
+                    await sql`UPDATE allstickers SET name=${newName.trim()}, image=${newImage.trim()} WHERE userid=${userId} AND name=${stickerName};`;
+                };
+
                 await sql`UPDATE wishlist SET image=${newImage.trim()} WHERE stickername=${stickerName};`;
             } catch(e) {
                 console.error(e);
@@ -165,7 +208,20 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
         let stickerExists = false;
 
-        const allStickers = await sql`SELECT * FROM allstickers WHERE name=${stickerName};`;
+        let allStickers;
+
+        try {
+            allStickers = await sql`SELECT * FROM allstickers WHERE name=${stickerName};`;
+        } catch (e) {
+            console.error(e);
+
+            return NextResponse.json(
+                {
+                    "error": "Something went wrong getting sticker"
+                },
+                { status: 500 }
+            );
+        };
 
         if (allStickers.length > 0) {
             stickerExists = true;
@@ -202,7 +258,11 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
         try {
             if (inDb) {
-                await sql`UPDATE stickers SET quantity = ${newAmount} WHERE stickername = ${stickerName} AND userid = ${userId};`;
+                if (isAdmin) {
+                    await sql`UPDATE stickers SET quantity = ${newAmount} WHERE stickername=${stickerName};`;
+                } else {
+                    await sql`UPDATE stickers SET quantity = ${newAmount} WHERE stickername=${stickerName} AND userid = ${userId};`;
+                };
             } else {
                 await sql`INSERT INTO stickers (stickername, userid, quantity, image) VALUES (${stickerName}, ${userId}, ${newAmount}, ${allStickers[0].image});`;
             };
@@ -327,6 +387,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     };
 
     const userId: string = session["session"]["userId"];
+    const isAdmin: boolean = session["user"]["role"] === "admin" ? true : false;
 
     const body: any = await req.json();
     const stickerName = body["name"];
@@ -350,7 +411,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
                 },
                 { status: 404 }
             );
-        } else if (sticker.userid !== userId) {
+        } else if (sticker.userid !== userId && !isAdmin) {
             return NextResponse.json(
                 {
                     "error": "You did not make that sticker"
