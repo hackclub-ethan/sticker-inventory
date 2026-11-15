@@ -6,8 +6,6 @@ import * as cheerio from 'cheerio';
 import { auth } from "@/src/utils/auth";
 import { sql } from "@/src/utils/sql";
 
-import { allStickersTable } from "@/src/utils/types";
-
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth.api.getSession({headers: await headers()});
 
