@@ -4,7 +4,9 @@ import { Table, toast } from "@heroui/react";
 
 import { StickerCard } from '../dashboard/components/sticker';
 
-export function WishList() {
+export function WishList(props: any) {
+    const numChanged: number = props.numChanged;
+
     const [wishList, setWishList] = useState([]);
     
     function getWishList() {
@@ -31,7 +33,7 @@ export function WishList() {
         });
     };
 
-    useEffect(getWishList, []);
+    useEffect(getWishList, [numChanged]);
 
     return (
         <Table.Body>

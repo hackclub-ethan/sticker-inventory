@@ -10,6 +10,8 @@ import { authClient } from '@/src/lib/auth-client';
 
 import { WishList } from './displayWishlist';
 
+import { allStickersTable } from '@/src/utils/types';
+
 import pageStyles from "./page.module.css";
 
 export default function Page() {
@@ -26,7 +28,8 @@ export default function Page() {
         router.replace("/signin");
     };
 
-    const [allStickers, setAllStickers] = useState([]);
+    const [allStickers, setAllStickers] = useState<allStickersTable[]>([]);
+    const [numChanged, setNumChanged] = useState<number>(0)
 
     function getAllStickers() {
         fetch("../api/stickers")
@@ -69,6 +72,8 @@ export default function Page() {
             if (!res.ok) {
                 throw new Error("Something went wrong adding to wishlist");
             };
+
+            setNumChanged(numChanged + 1);
         })
         .catch(e => {
             console.error(e);
@@ -122,7 +127,7 @@ export default function Page() {
                         </Table.Header>
 
                         
-                        <WishList />
+                        <WishList numChanged={numChanged} />
                     </Table.Content>
                 </Table.ScrollContainer>
             </Table>
