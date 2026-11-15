@@ -69,7 +69,13 @@ export default function Page() {
             setStickerCount(numOfStickers);
             setStickerCountLastUpdate(new Date().toLocaleString());
 
-            setNeededStickers(generateStickerList(unOwned));
+            if (unOwned.length > 3) {
+                const firstThree = [unOwned[0], unOwned[1], unOwned[2]];
+
+                setNeededStickers(generateStickerList(firstThree))
+            } else {
+                setNeededStickers(generateStickerList(unOwned));
+            }
             setOwnedStickers(generateStickerList(owned));
 
         })

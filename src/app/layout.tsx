@@ -41,11 +41,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider defaultTheme="light">
-          {children}
+          <div className="grid">
+            <div className="row1">
+              {children}
+            </div>
 
-          <footer>
-            <Link href="/">Home</Link> | <Link href="/dashboard">Dashboard</Link> | <Link href="/wishlist">Wishlist</Link> | <Link href="account">Account</Link> | <ThemeSwitch />
-          </footer>
+            <footer className="row2">
+              <Link href="/">Home</Link> | <Link href="/dashboard">Dashboard</Link> | <Link href="/wishlist">Wishlist</Link> | <Link href="account">Account</Link> | <ThemeSwitch />
+            </footer>
+          </div>
 
           <Toast.Provider />
         </ThemeProvider>

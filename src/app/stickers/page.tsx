@@ -40,8 +40,9 @@ export default function Page() {
 
     return (
         <>
-            <p>Nothing much here yet. Eventally it will have a list of all Hackclub stickers (hopefully)</p>
-
+            <h1>Every Sticker</h1>
+            <p>That is on this site</p>
+            
             <div className={`grid ${styles.container}`}>
                 {stickers.map((sticker: allStickersTable) => (
                     <StickerCard name={sticker.name} image={sticker.image} key={sticker.name} />
