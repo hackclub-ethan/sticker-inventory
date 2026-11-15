@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { auth } from "@/src/utils/auth";
 import { sql } from "@/src/utils/sql";
 
-import { stickersTable } from "@/src/utils/types";
+import { stickersTable, findUsers } from "@/src/utils/types";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -45,16 +45,19 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    // better auth IDs not Slack IDs
-    const userIds: string[] = [];
+    // better auth IDs not Slack IDs for now
+    const people: findUsers[] = [];
 
     for (let i = 0; i < stickerOccurrence.length; i++) {
-        userIds.push(stickerOccurrence[i]["userid"]);
+        people.push({
+            slackId: stickerOccurrence[i]["userid"],
+            name: "Poobert [THIS IS A PLACEHOLDER]"
+        });
     };
-
+    
     return NextResponse.json(
         {
-            "userIds": userIds
+            "users": people
         },
         { status: 200 }
     );

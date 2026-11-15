@@ -18,3 +18,8 @@ export interface wishlistTable {
     userid: string,
     image: string
 };
+
+export interface findUsers {
+    name: string,
+    slackId: string
+};
