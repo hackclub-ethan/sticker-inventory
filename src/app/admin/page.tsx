@@ -187,6 +187,28 @@ export default function Page() {
             });
         });
     };
+
+    function getNewStickers(): void {
+        fetch("../api/admin", {
+            method: "PUT"
+        })
+        .then(res => {
+            if(!res.ok) {
+                throw new Error("Response was not ok");
+            };
+        })
+        .catch(e => {
+            console.error(e);
+            
+            toast("Something went wrong updating stickers", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+
+            return;
+        });
+    };
     
     return (        
         <>
@@ -236,6 +258,8 @@ export default function Page() {
                         <Button type='submit'>Promote to admin</Button>
                     </Form>
                 </div>
+
+                <Button onClick={getNewStickers}>Get New Stickers</Button>
             </div>
         </>
     );
