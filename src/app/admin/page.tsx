@@ -48,16 +48,94 @@ export default function Page() {
         });
     };
 
-    function deleteSticker(e: React.SyntheticEvent<HTMLFormElement>) {
-        e.preventDefault();
-    
-    
-    };
-
     function editSticker(e: React.SyntheticEvent<HTMLFormElement>) {
         e.preventDefault();
 
+        const formData = new FormData(e.currentTarget);
+        const name = formData.get("name")?.toString();
+        const image = formData.get("image")?.toString();
 
+        if (!name || name.trim().length === 0) {
+            toast("That is not a valid sticker name", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+
+            return;
+        };
+
+        if (!image || image.trim().length === 0) {
+            toast("That is not a valid sticker image", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+
+            return;
+        };
+    
+        fetch("../api/stickers", {
+            method: "PUT",
+            body: JSON.stringify({
+                editSticker: true,
+                newName: name,
+                newImage: image
+            })
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Response was not ok");
+            };
+        })
+        .catch(e => {
+            console.error(e);
+
+            toast("Something went wrong", {
+                actionProps: {
+                    variant: "danger"
+                },
+                description: "Something went wrong editing the sticker"
+            });
+        });
+    };
+
+    function deleteSticker(e: React.SyntheticEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+        const name: string|undefined = formData.get("name")?.toString();
+
+        if (!name || name.trim().length === 0) {
+            toast("That is not a valid sticker name", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+
+            return;
+        };
+
+        fetch("../api/stickers", {
+            method: "DELETE",
+            body: JSON.stringify({
+                name: name
+            })
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Response was not ok");
+            };
+        })
+        .catch(e => {
+            console.error(e);
+
+            toast("Something went wrong deleting sticker", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+        });
     };
     
     return (        
@@ -77,7 +155,10 @@ export default function Page() {
                 <div className={`col2 row1`}>
                     <Form onSubmit={deleteSticker}>
                         <Label htmlFor="stickerName">Sticker Name</Label>
-                        <Input type="text" name="stickerName" id="stickerName" required />
+                        <Input type="text" name="stickerName" id="stickerName" />
+                        
+                        <Label htmlFor="stickerImage">Sticker Image (CDN Link)</Label>
+                        <Input type="text" name="stickerImage" id="stickerImage" />
 
                         <Button type="submit">Delete Sticker</Button>
                     </Form>

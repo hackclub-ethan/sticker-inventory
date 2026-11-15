@@ -132,7 +132,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             );
         };
 
-        if (!newName || newName.trim() === "") {
+        if (!newName && newName.trim() === "") {
             // Change the image
             try {
                 if (isAdmin) {
@@ -152,7 +152,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
                     { status: 500 }
                 );
             };
-        } else if (!newImage || newImage.trim() === "") {
+        } else if (!newImage && newImage.trim() === "") {
             // Change the name
             try {
                 if (isAdmin) {
@@ -170,7 +170,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
                     { status: 500 }
                 );
             };
-        } else {
+        } else if ((!newImage && newImage.trim() === "") && ((!newName || newName.trim() === "") && (!newImage || newImage.trim() === ""))) {
             // Change both
             try {
                 if (isAdmin) {
