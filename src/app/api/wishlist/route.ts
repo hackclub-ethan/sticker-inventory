@@ -4,6 +4,8 @@ import { headers } from "next/headers";
 import { auth } from "@/src/utils/auth";
 import { sql } from "@/src/utils/sql";
 
+import { allStickersTable, wishlistTable } from "@/src/utils/types";
+
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth.api.getSession({headers: await headers()});
 
@@ -19,7 +21,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const userId: string = session["session"]["userId"];
 
     try {
-        const wishList = await sql`SELECT * FROM wishlist WHERE userid=${userId};`;
+        const wishList: wishlistTable[] = await sql`SELECT * FROM wishlist WHERE userid=${userId};`;
 
         return NextResponse.json(
             {
@@ -65,7 +67,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    let stickerData;
+    let stickerData: allStickersTable[];
     
     try {
         stickerData = await sql`SELECT * FROM allstickers WHERE name=${stickerName.trim()};`;
@@ -134,7 +136,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    let wishlistData;
+    let wishlistData: wishlistTable[];
 
     try {
         wishlistData = await sql`SELECT * FROM wishlist WHERE userid=${userId} AND stickername=${stickerName};`;

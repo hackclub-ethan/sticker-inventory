@@ -5,6 +5,8 @@ import { auth } from "@/src/utils/auth";
 import { sql } from "@/src/utils/sql";
 import { isUriImage } from "@/src/utils/functions";
 
+import { allStickersTable, stickersTable } from "@/src/utils/types";
+
 // Get all/owned/unowned Stickers
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth.api.getSession({headers: await headers()});
@@ -20,7 +22,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const userId: string = session["session"]["userId"];
 
-    let allStickers;
+    let allStickers: allStickersTable[];
     let ownedStickers;
 
     try {
@@ -94,7 +96,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     };
 
     if (editSticker) {
-        let currentStickerData;
+        let currentStickerData: allStickersTable[];
 
         try {
             currentStickerData = await sql`SELECT * FROM allstickers WHERE userid=${userId} AND name=${stickerName.trim()};`;
@@ -208,7 +210,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
         let stickerExists = false;
 
-        let allStickers;
+        let allStickers: allStickersTable[];
 
         try {
             allStickers = await sql`SELECT * FROM allstickers WHERE name=${stickerName};`;
@@ -240,7 +242,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
 
         try {
-            const dbResult = await sql`SELECT * FROM stickers WHERE stickername=${stickerName} AND userid=${userId};`;
+            const dbResult: stickersTable[] = await sql`SELECT * FROM stickers WHERE stickername=${stickerName} AND userid=${userId};`;
 
             if (dbResult.length > 0) {
                 inDb = true;
@@ -333,7 +335,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        const stickerData = await sql`GET * FROM allstickers WHERE name=${name.trim()} OR image=${image.trim()}`;
+        const stickerData: allStickersTable[] = await sql`SELECT * FROM allstickers WHERE name=${name.trim()} OR image=${image.trim()};`;
 
         if (stickerData.length === 0) {
             return NextResponse.json(
@@ -402,7 +404,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        const sticker = await sql`SELECT * FROM allstickers WHERE name=${stickerName.trim()};`;
+        const sticker: allStickersTable[] = await sql`SELECT * FROM allstickers WHERE name=${stickerName.trim()};`;
 
         if (sticker.length === 0) {
             return NextResponse.json(
@@ -411,7 +413,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
                 },
                 { status: 404 }
             );
-        } else if (sticker.userid !== userId && !isAdmin) {
+        } else if (sticker[0].userid !== userId && !isAdmin) {
             return NextResponse.json(
                 {
                     "error": "You did not make that sticker"
