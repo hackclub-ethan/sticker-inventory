@@ -33,16 +33,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        /*
-        await auth.api.removeUser({
-            body: {
-                userId: userId
-            }
-        });
-        */
-
-        throw new Error("Not working yet so this endpoint MUST fail");
-        
+        authClient.deleteUser();        
     } catch (e) {
         return NextResponse.json(
             {
