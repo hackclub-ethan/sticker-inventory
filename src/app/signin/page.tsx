@@ -37,9 +37,6 @@ handleDemoLogin
         const username = formData.get("username")?.toString();
         const password = formData.get("pwd")?.toString();
 
-        console.log(username)
-        console.log(password)
-
         const { data, error } = await authClient.signIn.username({
             username: username || "",
             password: password || "",
