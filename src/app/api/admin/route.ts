@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 
-import { htmlparser, DefaultHandler } from "htmlparser";
+import * as cheerio from 'cheerio';
 
 import { auth } from "@/src/utils/auth";
+import { sql } from "@/src/utils/sql";
+
+import { allStickersTable } from "@/src/utils/types";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth.api.getSession({headers: await headers()});
@@ -59,27 +62,36 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    const res = await fetch("https://stickers.hackclub.com/catalog");
-    const data = await res.text();
+    const $ = await cheerio.fromURL("https://stickers.hackclub.com/catalog");
+    const stickers = $(".sticker-card");
 
-    const handler = new DefaultHandler(function (error: any, dom: any) {
-        if (error) {
-            console.error(error);
+    interface sticker {
+        name: string,
+        image: string
+    };
 
-            return NextResponse.json(
-                {
-                    "error": "Something went wrong parsing HTML"
-                },
-                { status: 500 }
-            );
-        } else {
-            const stickers = dom.getElementsByClassName("sticker-card");
-            console.log(stickers);
-        };
+    const stickerList: sticker[] = [];
+
+    stickers.each((index, element) => {
+        const sticker = $(element);
+
+        const name: string = sticker.find(".sticker-name").text();
+        
+        const image = sticker.find("img").attr("src");
+
+        stickerList.push({
+            name: name,
+            image: image || ""
+        });
     });
 
-    const parser = new htmlparser.Parser(handler);
-    parser.parseComplete(data);
+    for (let i = 0; i < stickerList.length; i++) {
+        try {
+            await sql`INSERT INTO allstickers VALUES (${stickerList[i]["name"]}, ${stickerList[i]["image"]}, 'Poobert');`;
+        } catch (e) {
+            console.error(e);
+        };
+    };
 
     return NextResponse.json(
         {},
