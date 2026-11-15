@@ -20,7 +20,7 @@ export default function Page() {
         router.replace("/signin");
     };
         
-    function deleteUser(e: React.SyntheticEvent<HTMLFormElement>) {
+    function deleteUser(e: React.SyntheticEvent<HTMLFormElement>): void {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
@@ -48,7 +48,7 @@ export default function Page() {
         });
     };
 
-    function editSticker(e: React.SyntheticEvent<HTMLFormElement>) {
+    function editSticker(e: React.SyntheticEvent<HTMLFormElement>): void {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
@@ -100,7 +100,7 @@ export default function Page() {
         });
     };
 
-    function deleteSticker(e: React.SyntheticEvent<HTMLFormElement>) {
+    function deleteSticker(e: React.SyntheticEvent<HTMLFormElement>): void {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
@@ -137,6 +137,44 @@ export default function Page() {
             });
         });
     };
+
+    function promoteUser(e: React.SyntheticEvent<HTMLFormElement>): void {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+        const email: string|undefined = formData.get("email")?.toString();
+
+        if (!email || email.trim().length === 0) {
+            toast("That is not a valid email", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+
+            return;
+        };
+
+        fetch("../api/admin/users", {
+            method: "PUT",
+            body: JSON.stringify({
+                email: email
+            })
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error("Response was not ok");
+            };
+        })
+        .catch(e => {
+            console.error(e);
+
+            toast("Something went wrong promoting user", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+        });
+    };
     
     return (        
         <>
@@ -153,22 +191,35 @@ export default function Page() {
                 </div>
 
                 <div className={`col2 row1`}>
-                    <Form onSubmit={deleteSticker}>
+                    <Form onSubmit={editSticker}>
                         <Label htmlFor="stickerName">Sticker Name</Label>
                         <Input type="text" name="stickerName" id="stickerName" />
                         
                         <Label htmlFor="stickerImage">Sticker Image (CDN Link)</Label>
                         <Input type="text" name="stickerImage" id="stickerImage" />
 
-                        <Button type="submit">Delete Sticker</Button>
+                        <Button type="submit">Edit Sticker</Button>
                     </Form>
                 </div>
 
                 <div className={`col1 row2`}>
-                    <Form onSubmit={editSticker}>
-
+                    <Form onSubmit={deleteSticker}>
+                        <Label htmlFor="stickerName">Sticker Name</Label>
+                        <Input type="text" name="stickerName" id="stickerName" />
+                        
+                        <Button type='submit'>Delete Sticker</Button>
                     </Form>
                 </div>
+            </div>
+
+            
+            <div className={`col2 row2`}>
+                <Form onSubmit={promoteUser}>
+                    <Label htmlFor='email'>User Email:</Label>
+                    <Input type='email' id="email" name='email' />
+
+                    <Button type='submit'>Promote to admin</Button>
+                </Form>
             </div>
         </>
     );
