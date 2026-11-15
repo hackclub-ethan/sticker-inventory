@@ -132,7 +132,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             );
         };
 
-        if (!newName && newName.trim() === "") {
+        if (!newName || newName.trim() === "") {
             // Change the image
             try {
                 if (isAdmin) {
@@ -152,7 +152,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
                     { status: 500 }
                 );
             };
-        } else if (!newImage && newImage.trim() === "") {
+        } else if (!newImage || newImage.trim() === "") {
             // Change the name
             try {
                 if (isAdmin) {
@@ -170,16 +170,17 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
                     { status: 500 }
                 );
             };
-        } else if ((!newImage && newImage.trim() === "") && ((!newName || newName.trim() === "") && (!newImage || newImage.trim() === ""))) {
+        } else if ((newImage && newImage.trim() !== "") && (newName || newName.trim() !== "")) {
             // Change both
             try {
                 if (isAdmin) {
-                    await sql`UPDATE allstickers SET name=${newName.trim()}, image=${newImage.trim()} name=${stickerName};`;
+                    await sql`UPDATE allstickers SET name=${newName.trim()}, image=${newImage.trim()} WHERE name=${stickerName};`;
                 } else {
                     await sql`UPDATE allstickers SET name=${newName.trim()}, image=${newImage.trim()} WHERE userid=${userId} AND name=${stickerName};`;
                 };
 
                 await sql`UPDATE wishlist SET image=${newImage.trim()} WHERE stickername=${stickerName};`;
+                await sql`UPDATE wishlist SET stickername=${newName.trim()} WHERE stickername=${stickerName};`;
             } catch(e) {
                 console.error(e);
 
@@ -433,7 +434,14 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     };
 
     try {
-        await sql`DELETE FROM allstickers WHERE userid=${userId} AND name=${stickerName};`;
+        if (isAdmin) {
+            await sql`DELETE FROM allstickers WHERE name=${stickerName};`;
+        } else {
+            await sql`DELETE FROM allstickers WHERE userid=${userId} AND name=${stickerName};`;
+        };
+
+        await sql`DELETE FROM stickers WHERE stickername=${stickerName};`;
+        await sql`DELETE FROM wishlist WHERE stickername=${stickerName};`;
     } catch (e) {
         console.error(e);
         

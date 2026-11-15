@@ -52,8 +52,19 @@ export default function Page() {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
-        const name = formData.get("name")?.toString();
-        const image = formData.get("image")?.toString();
+        const oldName: string|undefined = formData.get("oldName")?.toString();
+        const name: string|undefined = formData.get("name")?.toString();
+        const image: string|undefined = formData.get("image")?.toString();
+
+        if (!oldName || oldName.trim().length === 0) {
+            toast("That is not a valid old sticker name", {
+                actionProps: {
+                    variant: "danger"
+                }
+            });
+
+            return;
+        };
 
         if (!name || name.trim().length === 0) {
             toast("That is not a valid sticker name", {
@@ -79,6 +90,7 @@ export default function Page() {
             method: "PUT",
             body: JSON.stringify({
                 editSticker: true,
+                stickerName: oldName,
                 newName: name,
                 newImage: image
             })
@@ -154,7 +166,7 @@ export default function Page() {
             return;
         };
 
-        fetch("../api/admin/users", {
+        fetch("../api/admin/user", {
             method: "PUT",
             body: JSON.stringify({
                 email: email
@@ -188,15 +200,20 @@ export default function Page() {
 
                         <Button type="submit">Delete user</Button>
                     </Form>
+
+                    <br />
                 </div>
 
                 <div className={`col2 row1`}>
                     <Form onSubmit={editSticker}>
-                        <Label htmlFor="stickerName">Sticker Name</Label>
-                        <Input type="text" name="stickerName" id="stickerName" />
+                        <Label htmlFor="oldName">Old Sticker Name</Label>
+                        <Input type="text" name="oldName" id="oldName" />
                         
-                        <Label htmlFor="stickerImage">Sticker Image (CDN Link)</Label>
-                        <Input type="text" name="stickerImage" id="stickerImage" />
+                        <Label htmlFor="name">New Sticker Name</Label>
+                        <Input type="text" name="name" id="name" />
+                        
+                        <Label htmlFor="image">Sticker Image (CDN Link)</Label>
+                        <Input type="text" name="image" id="image" />
 
                         <Button type="submit">Edit Sticker</Button>
                     </Form>
@@ -204,22 +221,21 @@ export default function Page() {
 
                 <div className={`col1 row2`}>
                     <Form onSubmit={deleteSticker}>
-                        <Label htmlFor="stickerName">Sticker Name</Label>
-                        <Input type="text" name="stickerName" id="stickerName" />
+                        <Label htmlFor="name">Sticker Name</Label>
+                        <Input type="text" name="name" id="name" />
                         
                         <Button type='submit'>Delete Sticker</Button>
                     </Form>
                 </div>
-            </div>
 
-            
-            <div className={`col2 row2`}>
-                <Form onSubmit={promoteUser}>
-                    <Label htmlFor='email'>User Email:</Label>
-                    <Input type='email' id="email" name='email' />
+                <div className={`col2 row2`}>
+                    <Form onSubmit={promoteUser}>
+                        <Label htmlFor='email'>User Email:</Label>
+                        <Input type='email' id="email" name='email' />
 
-                    <Button type='submit'>Promote to admin</Button>
-                </Form>
+                        <Button type='submit'>Promote to admin</Button>
+                    </Form>
+                </div>
             </div>
         </>
     );

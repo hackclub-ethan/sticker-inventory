@@ -6,7 +6,7 @@ In addition I added the ability to add what ever sticker you want so you can add
 
 ## Use
 
-To use the project you can go to this link https://sticker-inventory.netlify.app/dashboard
+To use the project you can go to this link https://sticker-inventory.netlify.app
 
 ## Dev
 
