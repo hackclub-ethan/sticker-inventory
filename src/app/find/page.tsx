@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
-import { Button, Form, Label, Input, Table, toast } from "@heroui/react";
+import { Button, Form, Label, Input, Table, toast, Link } from "@heroui/react";
 
 import { authClient } from "@/src/lib/auth-client";
 
@@ -26,7 +26,6 @@ export default function Page() {
 
     const [people, setPeople] = useState<findUsers[]>([]);
     
-
     function findPeople(e: React.SyntheticEvent<HTMLFormElement>): void {
         e.preventDefault();
 
@@ -54,9 +53,12 @@ export default function Page() {
         .then(json => {
             const users: findUsers[] = json["users"];
 
+            console.log(users);
             setPeople(users);
         })
         .catch(e => {
+            console.error(e);
+
             toast("Something went wrong finding people", {
                 actionProps: {
                     variant: "danger"
@@ -94,7 +96,7 @@ export default function Page() {
                                     <Table.Row key={person.slackId}>
                                         <Table.Cell>{person.name}</Table.Cell>
                                         <Table.Cell>
-                                            Link to DM
+                                            <Link href={`https://hackclub.slack.com/team/${person["slackId"]}`}>DM them!</Link>
                                         </Table.Cell>
                                     </Table.Row>
                                 ))}
