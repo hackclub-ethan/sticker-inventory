@@ -18,10 +18,19 @@ export const auth = betterAuth({
                     clientId: process.env.clientId as string,
                     clientSecret: process.env.clientSecret as string,
                     discoveryUrl: "https://auth.hackclub.com/.well-known/openid-configuration",
-                    scopes: ["openid", "email"],
-                    mapProfileToUser: (profile) => ({
-						email: profile.email,
-					})
+                    scopes: ["openid", "email", "slack_id", "profile"],
+                    mapProfileToUser: async (profile: any) => {
+                        profile["id"] = profile["slack_id"];
+                        profile["sub"] = profile["slack_id"];
+                        
+                        return {
+                            "id": profile["slack_id"],
+                            "email": profile["email"],
+                            "emailVerified": profile["email_verified"],
+                            "image": profile["image"],
+                            "name": profile["nickname"]
+					    };
+                    },
                 }
             ]
         }),
