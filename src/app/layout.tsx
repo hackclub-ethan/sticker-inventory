@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
 
 import { ThemeProvider } from "next-themes";
 
@@ -6,6 +7,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { Link, Toast } from "@heroui/react";
 
+import { auth } from "../utils/auth";
 import { ThemeSwitch } from "./components/themeSwitcher";
 
 import "./globals.css";
@@ -32,7 +34,15 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const session = await auth.api.getSession({headers: await headers()});
+
+  let isAdmin: boolean = false;
+
+  if (session) {
+      isAdmin= session["user"]["role"] === "admin" ? true : false;
+  };
+  
   return (
     <html
       lang="en"
@@ -47,7 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </div>
 
             <footer className="row2">
-              <Link href="/">Home</Link> | <Link href="/dashboard">Dashboard</Link> | <Link href="/wishlist">Wishlist</Link> | <Link href="account">Account</Link> | <ThemeSwitch />
+              <Link href="/">Home</Link> | <Link href="/dashboard">Dashboard</Link> | <Link href="/wishlist">Wishlist</Link> | <Link href="/account">Account</Link> | {isAdmin ? <Link href="/admin">Admin</Link> : ""} | <ThemeSwitch />
             </footer>
           </div>
 
