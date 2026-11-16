@@ -86,3 +86,9 @@ footer {
   width: 100vw;
   text-align: center;
 }
+
+.item {
+  border-color: var(--foreground);
+  border-style: solid;
+  border-width: 1px;
+}

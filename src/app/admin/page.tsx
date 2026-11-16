@@ -6,6 +6,8 @@ import { Button, Form, Input, Label, toast } from "@heroui/react";
 
 import { authClient } from "@/src/lib/auth-client";
 
+import styles from "./adminPage.module.css";
+
 export default function Page() {
     const router = useRouter();
             
@@ -210,15 +212,17 @@ export default function Page() {
         });
     };
     
-    return (        
-        <>
+    return (
+        <div className={`${styles.page}`}>
             <h1>Admin</h1>
 
-            <div className={`grid`}>
-                <div className={`col1 row1`}>
+            <div className={`grid ${styles.actions}`}>
+                <div className={`col1 row1 item ${styles.action}`}>
                     <Form onSubmit={deleteUser}>
                         <Label htmlFor="email">Users Email:</Label>
                         <Input type="email" name="email" id="email" required />
+
+                        <br />
 
                         <Button type="submit">Delete user</Button>
                     </Form>
@@ -226,41 +230,49 @@ export default function Page() {
                     <br />
                 </div>
 
-                <div className={`col2 row1`}>
+                <div className={`col2 row1 item ${styles.action}`}>
                     <Form onSubmit={editSticker}>
                         <Label htmlFor="oldName">Old Sticker Name</Label>
-                        <Input type="text" name="oldName" id="oldName" />
+                        <Input type="text" name="oldName" id="oldName" className={`${styles.inputThatNeedsSpacing}`} />
                         
                         <Label htmlFor="name">New Sticker Name</Label>
-                        <Input type="text" name="name" id="name" />
+                        <Input type="text" name="name" id="name" className={`${styles.inputThatNeedsSpacing}`} />
                         
                         <Label htmlFor="image">Sticker Image (CDN Link)</Label>
-                        <Input type="text" name="image" id="image" />
+                        <Input type="text" name="image" id="image" className={`${styles.inputThatNeedsSpacing}`} />
+
+                        <br />
 
                         <Button type="submit">Edit Sticker</Button>
                     </Form>
                 </div>
 
-                <div className={`col1 row2`}>
+                <div className={`col1 row2 item ${styles.action}`}>
                     <Form onSubmit={deleteSticker}>
                         <Label htmlFor="name">Sticker Name</Label>
                         <Input type="text" name="name" id="name" />
                         
+                        <br />
+
                         <Button type='submit'>Delete Sticker</Button>
                     </Form>
                 </div>
 
-                <div className={`col2 row2`}>
+                <div className={`col2 row2 item ${styles.action}`}>
                     <Form onSubmit={promoteUser}>
                         <Label htmlFor='email'>User Email:</Label>
                         <Input type='email' id="email" name='email' />
+
+                        <br />
 
                         <Button type='submit'>Promote to admin</Button>
                     </Form>
                 </div>
 
-                <Button onClick={getNewStickers}>Get New Stickers</Button>
+                <div className={`col1 row3 item ${styles.action}`}>
+                    <Button onClick={getNewStickers}>Get New Stickers</Button>
+                </div>
             </div>
-        </>
+        </div>
     );
 };

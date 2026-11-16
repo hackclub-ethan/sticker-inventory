@@ -1,3 +1,10 @@
 .page {
-    width: 100vw;
+    width: 98vw;
+
+    margin: 0 auto;
+}
+
+.divider {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }

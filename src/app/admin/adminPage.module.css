@@ -1,0 +1,19 @@
+.page {
+    width: 98vw;
+
+    margin: 0 auto;
+}
+
+.actions {
+    gap: 10px;
+}
+
+.action {
+    padding-top: 2.5%;
+    padding-bottom: 2.5%;
+    padding-left: 1%;
+}
+
+.inputThatNeedsSpacing {
+    margin-right: 2%;
+}

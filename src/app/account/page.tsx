@@ -107,6 +107,22 @@ export default function Page() {
         <div className={`${styles.page}`}>
             <h1>Account</h1>
 
+            <h1>Show up on Find People</h1>
+            <p>This feature is where you can see who else has a sticker. Opt in</p>
+            
+            <Switch isSelected={isOptedIn} onChange={setOptedIn}>
+                <Switch.Content>
+                    <Switch.Control>
+                        <Switch.Thumb />
+                    </Switch.Control>
+                    Opted in/Out
+                </Switch.Content>
+            </Switch>
+
+            <hr className={`${styles.divider}`} />
+
+            <h2>Delete Account</h2>
+
             <Modal>
                 <Button variant="danger">Delete Account</Button>
                 
@@ -133,18 +149,6 @@ export default function Page() {
                     </Modal.Container>
                 </Modal.Backdrop>
             </Modal>
-
-            <h1>Show up on Find People</h1>
-            <p>This feature is where you can see who else has a sticker. Opt in</p>
-            
-            <Switch isSelected={isOptedIn} onChange={setOptedIn}>
-                <Switch.Content>
-                    <Switch.Control>
-                        <Switch.Thumb />
-                    </Switch.Control>
-                    Opted in/Out
-                </Switch.Content>
-            </Switch>
         </div>
     );
 };
