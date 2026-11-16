@@ -60,8 +60,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    const $ = await cheerio.fromURL("https://stickers.hackclub.com/catalog");
-    const stickers = $(".sticker-card");
+    const $: any = await cheerio.fromURL("https://stickers.hackclub.com/catalog");
+    const stickers: any = $(".sticker-card");
 
     interface sticker {
         name: string,
@@ -70,16 +70,16 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
     const stickerList: sticker[] = [];
 
-    stickers.each((index, element) => {
-        const sticker = $(element);
+    stickers.each((index: any, element: any) => {
+        const sticker: any = $(element);
 
         const name: string = sticker.find(".sticker-name").text();
         
-        const image = sticker.find("img").attr("src");
+        const image: string = sticker.find("img").attr("src");
 
         stickerList.push({
             name: name,
-            image: image || ""
+            image: image
         });
     });
 

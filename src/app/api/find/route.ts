@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { auth } from "@/src/utils/auth";
 import { sql } from "@/src/utils/sql";
 
-import { stickersTable, findUsers, findTable } from "@/src/utils/types";
+import { stickersTable, findUsers, findTable, userTable, accountTable } from "@/src/utils/types";
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -20,12 +20,12 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const userId: string = session["session"]["userId"];
 
-    const searchParams = req.nextUrl.searchParams;
+    const searchParams: any = req.nextUrl.searchParams;
     const stickerName: string|undefined|null = searchParams.get("sticker");
 
     if (!stickerName) {
         try {
-            const optIn = await sql`SELECT * FROM find WHERE userid=${userId};`;
+            const optIn: findTable[] = await sql`SELECT * FROM find WHERE userid=${userId};`;
 
             return NextResponse.json(
                 {
@@ -91,8 +91,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     for (let i = 0; i < stickerOccurrence.length; i++) {
         try {
-            const userTableRes = await sql`SELECT * FROM "user" WHERE id=${stickerOccurrence[i]["userid"]};`;
-            const accountTableRes = await sql`SELECT * FROM account WHERE "userId"=${stickerOccurrence[i]["userid"]};`;
+            const userTableRes: userTable[] = await sql`SELECT * FROM "user" WHERE id=${stickerOccurrence[i]["userid"]};`;
+            const accountTableRes: accountTable[] = await sql`SELECT * FROM account WHERE "userId"=${stickerOccurrence[i]["userid"]};`;
             
             if(userTableRes && userTableRes[i] && userTableRes[i]["name"] && accountTableRes && accountTableRes[i] && accountTableRes[i]["accountId"]) {
                 if (!optedInUsers.includes(accountTableRes[i]["accountId"])) {
@@ -138,7 +138,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
     const userId: string = session["session"]["userId"];
 
-    const body = await req.json();
+    const body: any = await req.json();
     const optIn: boolean|undefined = body["optIn"];
 
     if (typeof optIn !== "boolean") {

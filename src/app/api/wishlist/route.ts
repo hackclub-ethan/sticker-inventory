@@ -55,8 +55,8 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
     const userId: string = session["session"]["userId"];
     
-    const body = await req.json();
-    const stickerName = body["sticker"];
+    const body: any = await req.json();
+    const stickerName: string|undefined|null = body["sticker"];
 
     if (!stickerName || stickerName.trim() === "") {
         return NextResponse.json(
@@ -124,8 +124,8 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
 
     const userId: string = session["session"]["userId"];
     
-    const body = await req.json();
-    const stickerName = body["name"];
+    const body: any = await req.json();
+    const stickerName: string|undefined|null = body["name"];
 
     if (!stickerName || stickerName.trim() === "") {
         return NextResponse.json(

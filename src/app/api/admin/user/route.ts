@@ -27,7 +27,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    const body = await req.json();
+    const body: any = await req.json();
     const email: string|undefined|null = body["email"];
    
     if (!email || email.trim().length === 0) {
@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    let users;
+    let users: any;
     
     try {
         users = await auth.api.listUsers({
@@ -116,7 +116,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    const body = await req.json();
+    const body: any = await req.json();
     const email: string|undefined|null = body["email"];
    
     if (!email || email.trim().length === 0) {
@@ -128,7 +128,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
         );
     };
 
-    let users;
+    let users: any;
     
     try {
         users = await auth.api.listUsers({

@@ -35,7 +35,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         const userId: string = session["session"]["userId"];
 
         let allStickers: allStickersTable[];
-        let ownedStickers;
+        let ownedStickers: any[];
 
         try {
             allStickers = await sql`SELECT * FROM allstickers;`;
@@ -222,7 +222,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             );
         };
 
-        let stickerExists = false;
+        let stickerExists: boolean = false;
 
         let allStickers: allStickersTable[];
 
@@ -252,8 +252,7 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
             );
         };
 
-        let inDb = false;
-
+        let inDb: boolean = false;
 
         try {
             const dbResult: stickersTable[] = await sql`SELECT * FROM stickers WHERE stickername=${stickerName} AND userid=${userId};`;
@@ -406,7 +405,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     const isAdmin: boolean = session["user"]["role"] === "admin" ? true : false;
 
     const body: any = await req.json();
-    const stickerName = body["name"];
+    const stickerName: string|undefined|null = body["name"];
 
     if (!stickerName || stickerName.trim() === "") {
         return NextResponse.json(

@@ -53,7 +53,6 @@ export default function Page() {
         .then(json => {
             const users: findUsers[] = json["users"];
 
-            console.log(users);
             setPeople(users);
         })
         .catch(e => {
