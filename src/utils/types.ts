@@ -19,6 +19,12 @@ export interface wishlistTable {
     image: string
 };
 
+export interface findTable {
+    id: number,
+    userid: string,
+    optin: boolean
+};
+
 export interface findUsers {
     name: string,
     slackId: string
