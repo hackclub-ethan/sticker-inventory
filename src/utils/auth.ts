@@ -3,6 +3,8 @@ import { admin, genericOAuth, username } from "better-auth/plugins";
 
 import { Pool } from "pg";
 
+import { sql } from "./sql";
+
 export const auth = betterAuth({
     database: new Pool({
         connectionString: process.env.POSTGRES_URL,
@@ -44,5 +46,14 @@ export const auth = betterAuth({
     },
     emailAndPassword: {
         enabled: true
+    },
+    databaseHooks: {
+        user: {
+            create: {
+                after: async (user) => {
+                    await sql`INSERT INTO find (userid, optin) VALUES (${user.id, false});`;
+                }
+            }
+        }
     }
 });

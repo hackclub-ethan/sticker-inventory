@@ -18,10 +18,31 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         );
     };
 
+    const userId: string = session["session"]["userId"];
+
     const searchParams = req.nextUrl.searchParams;
     const stickerName: string|undefined|null = searchParams.get("sticker");
 
-    if (!stickerName || stickerName.trim().length === 0) {
+    if (!stickerName) {
+        try {
+            const optIn = await sql`SELECT * FROM find WHERE userid=${userId};`;
+
+            return NextResponse.json(
+                {
+                    "optIn": optIn[0]["optin"]
+                },
+                { status: 200 }
+            );
+        } catch (e) {
+            console.error(e);
+
+            return NextResponse.json(
+                {
+                    "error": "Something went wrong getting "
+                }
+            )
+        };
+    } else if (stickerName.trim().length === 0) {
         return NextResponse.json(
             {
                 "error": "That is not a valid sticker name"
@@ -77,4 +98,49 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         },
         { status: 200 }
     );
+};
+
+export async function PUT(req: NextRequest): Promise<NextResponse> {
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+        return NextResponse.json(
+            {
+                "error": "Not Authenticated"
+            },
+            { status: 403 }
+        );
+    };
+
+    const userId: string = session["session"]["userId"];
+
+    const body = await req.json();
+    const optIn: boolean|undefined = body["optIn"];
+
+    if (typeof optIn !== "boolean") {
+        return NextResponse.json(
+            {
+                "error": "That is not a valid opt in value"
+            },
+            { status: 400 }
+        );
+    };
+
+    try {
+        await sql`UPDATE find SET optin=${optIn} WHERE userid=${userId};`;
+    } catch (e) {
+        console.error(e);
+
+        return NextResponse.json(
+            {
+                "error": "Something went wrong changing status"
+            },
+            { status: 500 }
+        );
+    };
+
+    return NextResponse.json(
+        {},
+        { status: 200 }
+    )
 };

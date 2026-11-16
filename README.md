@@ -63,6 +63,12 @@ CREATE TABLE "wishlist" (
   "userid" text NOT NULL,
   "image" text NOT NULL
 );
+
+CREATE TABLE "find" (
+  "id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "find_id_seq"),
+  "userid" text NOT NULL UNIQUE,
+  "optin" boolean NOT NULL
+);
 ```
 
 ### Build
