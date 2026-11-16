@@ -49,10 +49,26 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     const people: findUsers[] = [];
 
     for (let i = 0; i < stickerOccurrence.length; i++) {
-        people.push({
-            slackId: stickerOccurrence[i]["userid"],
-            name: "Poobert [THIS IS A PLACEHOLDER]"
-        });
+        try {
+            const userTableRes = await sql`SELECT * FROM "user" WHERE id=${stickerOccurrence[i]["userid"]};`;
+            const accountTableRes = await sql`SELECT * FROM account WHERE "userId"=${stickerOccurrence[i]["userid"]};`;
+            
+            if(userTableRes && userTableRes[i] && userTableRes[i]["name"] && accountTableRes && accountTableRes[i] && accountTableRes[i]["accountId"]) {
+                people.push({
+                    slackId: accountTableRes[i]["accountId"],
+                    name: userTableRes[i]["name"]
+                });
+            }
+        } catch (e) {
+            console.error(e);
+
+            return NextResponse.json(
+                {
+                    "error": "Something went wrong getting user data"
+                },
+                { status: 500 }
+            );
+        };
     };
     
     return NextResponse.json(
