@@ -350,7 +350,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     try {
         const stickerData: allStickersTable[] = await sql`SELECT * FROM allstickers WHERE name=${name.trim()} OR image=${image.trim()};`;
 
-        if (stickerData.length === 0) {
+        if (stickerData.length !== 0) {
             return NextResponse.json(
                 {
                     "error": "That sticker already exists"

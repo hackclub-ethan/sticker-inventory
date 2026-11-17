@@ -5,7 +5,7 @@ export function isUriImage(uri: string) {
     //moving on now
     var parts = uri.split('.');
     var extension = parts[parts.length-1];
-    var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp']
+    var imageTypes = ['jpg','jpeg','tiff','png','gif','bmp','webp']
     if(imageTypes.indexOf(extension) !== -1) {
         return true;   
     }

@@ -1,3 +1,9 @@
+.page {
+    width: 98vw;
+
+    margin: 0 auto;
+}
+
 .container {
     grid-template-columns: 1fr 1fr 1fr 1fr;
 
